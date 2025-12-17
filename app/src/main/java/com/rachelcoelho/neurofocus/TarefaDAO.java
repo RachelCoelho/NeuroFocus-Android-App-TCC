@@ -55,4 +55,18 @@ public class TarefaDAO {
 
         return tarefas;
     }
+
+    // Método para deletar uma tarefa
+    public boolean deletar(Tarefa tarefa) {
+        try {
+            // A fórmula mágica: "DELETE DA TABELA X ONDE O ID SEJA IGUAL A Y"
+            String[] args = { tarefa.getId().toString() };
+            escreve.delete(DbHelper.TABELA_TAREFAS, "id=?", args);
+            Log.i("INFO", "Tarefa removida com sucesso!");
+        } catch (Exception e) {
+            Log.e("INFO", "Erro ao remover tarefa " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
 }

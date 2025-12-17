@@ -46,6 +46,53 @@ public class MainActivity extends AppCompatActivity {
         rvTarefas.setHasFixedSize(true);
         rvTarefas.setAdapter(adapter);
 
+        // ... (código anterior do rvTarefas.setAdapter)
+
+        // 5. Configurar o evento de clique na lista
+        rvTarefas.addOnItemTouchListener(
+                new RecyclerItemClickListener(
+                        getApplicationContext(),
+                        rvTarefas,
+                        new RecyclerItemClickListener.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                // Clique rápido (podemos usar para editar no futuro)
+                            }
+
+                            @Override
+                            public void onLongItemClick(View view, int position) {
+                                // Clique Longo: DELETAR
+
+                                // 1. Identificar qual tarefa foi clicada
+                                Tarefa tarefaSelecionada = listaDeTarefas.get(position);
+
+                                // 2. Criar o alerta de confirmação
+                                android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(MainActivity.this);
+                                dialog.setTitle("Confirmar exclusão");
+                                dialog.setMessage("Deseja excluir a tarefa: " + tarefaSelecionada.getNomeTarefa() + "?");
+
+                                dialog.setPositiveButton("Sim", (dialogInterface, i) -> {
+
+                                    // 3. Deletar do Banco de Dados
+                                    if (dao.deletar(tarefaSelecionada)) {
+                                        carregarLista(); // Atualiza a tela
+                                        Toast.makeText(getApplicationContext(), "Tarefa excluída!", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Erro ao excluir!", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                });
+
+                                dialog.setNegativeButton("Não", null);
+
+                                // Exibir a janela
+                                dialog.create();
+                                dialog.show();
+                            }
+                        }
+                )
+        );
+
         // 4. Ação do Botão Adicionar
         btAdicionar.setOnClickListener(new View.OnClickListener() {
             @Override
